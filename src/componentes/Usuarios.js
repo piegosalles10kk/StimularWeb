@@ -118,10 +118,10 @@ class UsuariosCadastrados extends React.Component {
             <Modal.Body>Você tem certeza que deseja deletar este usuário?</Modal.Body>
             <Modal.Footer>
             <Button variant="danger" onClick={this.handleConfirmInactivate}>
-                Sim
+                Excluir
               </Button>
               <Button variant="success" onClick={this.handleCloseModal}>
-                Não
+                Cancelar
               </Button>
               
             </Modal.Footer>
