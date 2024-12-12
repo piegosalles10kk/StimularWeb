@@ -290,6 +290,7 @@ export default function AtividadesCadastradas({ token }) {
                 atividades: []
             });
             setModalShow(false);
+            refreshAtividades();
         } else {
             console.error('Erro ao enviar a atividade', await response.text());
         }
