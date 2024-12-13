@@ -477,7 +477,7 @@ export default function GrupoAtividades({ token }) {
                                                         <Form.Group key={index} className="mt-2">
                                                             <Row>
                                                                 <Col xs={1}>
-                                                                    <Button variant="danger" onClick={() => handleDeleteAlternativa(atividadeIndex, exerIndex, index)}>🗑</Button>
+                                                                    <Button variant="outline-danger" onClick={() => handleDeleteAlternativa(atividadeIndex, exerIndex, index)}>🗑</Button>
                                                                 </Col>
                                                                 <Col xs={11}>
                                                                     <Row>
@@ -502,6 +502,7 @@ export default function GrupoAtividades({ token }) {
                                                             </Row>
                                                         </Form.Group>
                                                     ))}
+                                                    <br/>
                                                     <Button variant="secondary" onClick={() => handleAddAlternativa(atividadeIndex, exerIndex)}>
                                                         Adicionar Alternativa
                                                     </Button>
@@ -512,12 +513,15 @@ export default function GrupoAtividades({ token }) {
                                 </Card.Body>
                             </Card>
                         ))}
-                        <Button variant="primary" onClick={() => handleAddAtividade(false)} className="mb-3">
+                        <br/>
+                        <div className="w-100 d-flex justify-content-between">
+                          <Button variant="primary" onClick={() => handleAddAtividade(false)}>
                             Adicionar Atividade
-                        </Button>
-                        <Button variant="success" onClick={handleSubmit}>
+                          </Button>
+                          <Button variant="success" onClick={handleSubmit}>
                             Salvar Grupo
-                        </Button>
+                          </Button>
+                        </div>
                     </Form>
                 </Modal.Body>
             </Modal>
@@ -550,7 +554,7 @@ export default function GrupoAtividades({ token }) {
                                 </Form.Group>
                                 {selectedAtividade.imagem && (
                                     <Image
-                                        src={selectedAtividade.imagem}
+                                        src={`${selectedAtividade.imagem}${tokenMidia}`}
                                         alt="Preview do Grupo"
                                         thumbnail
                                         style={{ marginTop: '10px', maxWidth: '100%' }}
@@ -597,143 +601,173 @@ export default function GrupoAtividades({ token }) {
                             </Col>
                         </Row>
                         {selectedAtividade.atividades.map((atividade, atividadeIndex) => (
-                            <Card className="mt-3" key={atividadeIndex}>
-                                <Card.Body>
-                                    <Card.Title style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                        Atividade {atividadeIndex + 1}
-                                        <Button variant="outline-danger" onClick={() => {
-                                            const novasAtividades = selectedAtividade.atividades.filter((_, i) => i !== atividadeIndex);
-                                            setSelectedAtividade({ ...selectedAtividade, atividades: novasAtividades });
-                                        }}>🗑</Button>
-                                    </Card.Title>
-                                    <Row>
-                                        <Col md={6}>
-                                            <Form.Group>
-                                                <Form.Label>Imagem da Atividade</Form.Label>
+    <Card className="mt-3" key={atividadeIndex}>
+        <Card.Body>
+            <Card.Title style={{ display: 'flex', justifyContent: 'space-between' }}>
+                Atividade {atividadeIndex + 1}
+                <Button variant="outline-danger" onClick={() => {
+                    const novasAtividades = selectedAtividade.atividades.filter((_, i) => i !== atividadeIndex);
+                    setSelectedAtividade({ ...selectedAtividade, atividades: novasAtividades });
+                }}>🗑</Button>
+            </Card.Title>
+            <Row>
+                <Col md={6}>
+                    <Form.Group>
+                        <Form.Label>Imagem da Atividade</Form.Label>
+                        <Form.Control
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => {
+                                const file = e.target.files[0];
+                                if (file) {
+                                    handleInputChange(atividadeIndex, 'fotoDaAtividade', file);
+                                }
+                            }}
+                        />
+                    </Form.Group>
+                    {atividade.fotoDaAtividade && (
+                      <Image
+                        src={typeof atividade.fotoDaAtividade === 'string' ? `${atividade.fotoDaAtividade}${tokenMidia}` :
+                          (atividade.fotoDaAtividade instanceof File ? URL.createObjectURL(atividade.fotoDaAtividade) : '')}
+                        alt="Preview da Atividade"
+                        thumbnail
+                        style={{ marginTop: '10px', maxWidth: '100%' }}
+                      />
+                    )}
+                </Col>
+            </Row>
+            <Row>
+                <Col md={6}>
+                    <Form.Group>
+                        <Form.Label>Nome da Atividade</Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={atividade.nomdeDaAtividade}
+                            onChange={(e) => handleInputChange(atividadeIndex, 'nomdeDaAtividade', e.target.value)}
+                            placeholder="Nome da Atividade"
+                        />
+                    </Form.Group>
+                </Col>
+                <Col md={6}>
+                    <Form.Group>
+                        <Form.Label>Tipo de Atividade</Form.Label>
+                        <Form.Select
+                            value={atividade.tipoDeAtividade}
+                            onChange={(e) => handleInputChange(atividadeIndex, 'tipoDeAtividade', e.target.value)}
+                        >
+                            <option value="">Selecione...</option>
+                            <option value="Fisica">Física</option>
+                            <option value="Linguistica">Linguística</option>
+                            <option value="Cognitiva">Cognitiva</option>
+                            <option value="Socioafetiva">Socioafetiva</option>
+                        </Form.Select>
+                    </Form.Group>
+                </Col>
+            </Row>
+            {atividade.exercicios.map((exercicio, exerIndex) => (
+                <Card key={exerIndex} className="mt-3">
+                    <Card.Body>
+                        <Card.Title>Exercício {exerIndex + 1}</Card.Title>
+                        <Row>
+                          <Col md={6}>
+                            <Form.Group>
+                              <Form.Label>Mídia (Imagem/Vídeo)</Form.Label>
+                              <Form.Control
+                                type="file"
+                                accept="image/*, video/*"
+                                onChange={(e) => {
+                                  const file = e.target.files[0];
+                                  if (file) {
+                                    const novasAtividades = [...selectedAtividade.atividades];
+                                    novasAtividades[atividadeIndex].exercicios[exerIndex].midia = {
+                                      tipoDeMidia: file.type,
+                                      url: file,
+                                    };
+                                    setSelectedAtividade({ ...selectedAtividade, atividades: novasAtividades });
+                                  }
+                                }}
+                              />
+                            </Form.Group>
+                            {exercicio.midia.url && (
+                              <div style={{ marginTop: '10px' }}>
+                                {exercicio.midia.tipoDeMidia === 'img' ? (
+                                  <Image
+                                    src={typeof exercicio.midia.url === 'string' ? `${exercicio.midia.url}${tokenMidia}` : URL.createObjectURL(exercicio.midia.url)}
+                                    alt="Preview do Exercício"
+                                    thumbnail
+                                    style={{ maxWidth: '100%' }}
+                                  />
+                                ) : (
+                                  <video width="100%" controls>
+                                    <source src={typeof exercicio.midia.url === 'string' ? `${exercicio.midia.url}${tokenMidia}` : URL.createObjectURL(exercicio.midia.url)} type={exercicio.midia.tipoDeMidia} />
+                                    Seu navegador não suporta a tag de vídeo.
+                                  </video>
+                                )}
+                              </div>
+                            )}
+                          </Col>
+                        </Row>
+                        <Col md={10}>
+                            <Form.Group>
+                                <Form.Label>Enunciado</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    rows={3}
+                                    value={exercicio.enunciado}
+                                    onChange={(e) => handleExerciseInputChange(atividadeIndex, exerIndex, 'enunciado', e.target.value)}
+                                    placeholder="Enunciado"
+                                />
+                            </Form.Group>
+                        </Col>
+                        {exercicio.alternativas.map((alternativa, index) => (
+                            <Form.Group key={index} className="mt-2">
+                                <Row>
+                                    <Col xs={1}>
+                                        <Button variant="outline-danger" onClick={() => handleDeleteAlternativa(atividadeIndex, exerIndex, index)}>🗑</Button>
+                                    </Col>
+                                    <Col xs={11}>
+                                        <Row>
+                                            <Col md={8}>
                                                 <Form.Control
                                                     type="text"
-                                                    value={atividade.fotoDaAtividade || ''}
-                                                    placeholder="URL da Imagem da Atividade"
-                                                    onChange={(e) => handleInputChange(atividadeIndex, 'fotoDaAtividade', e.target.value)}
+                                                    value={alternativa.alternativa || ''}
+                                                    placeholder="Texto da alternativa"
+                                                    onChange={(e) => handleAlternativaChange(atividadeIndex, exerIndex, index, { target: { value: e.target.value, name: 'alternativa' } })}
                                                 />
-                                            </Form.Group>
-                                            {atividade.fotoDaAtividade && (
-                                                <Image
-                                                    src={atividade.fotoDaAtividade}
-                                                    alt="Preview da Atividade"
-                                                    thumbnail
-                                                    style={{ marginTop: '10px', maxWidth: '100%' }}
+                                            </Col>
+                                            <Col md={4}>
+                                                <Form.Check
+                                                    type="checkbox"
+                                                    label="Correta"
+                                                    checked={alternativa.resultadoAlternativa}
+                                                    onChange={(e) => handleAlternativaChange(atividadeIndex, exerIndex, index, { target: { checked: e.target.checked, name: 'resultado' } })}
                                                 />
-                                            )}
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col md={6}>
-                                            <Form.Group>
-                                                <Form.Label>Nome da Atividade</Form.Label>
-                                                <Form.Control
-                                                    type="text"
-                                                    value={atividade.nomdeDaAtividade}
-                                                    onChange={(e) => handleInputChange(atividadeIndex, 'nomdeDaAtividade', e.target.value)}
-                                                    placeholder="Nome da Atividade"
-                                                />
-                                            </Form.Group>
-                                        </Col>
-                                        <Col md={6}>
-                                            <Form.Group>
-                                                <Form.Label>Tipo de Atividade</Form.Label>
-                                                <Form.Select
-                                                    value={atividade.tipoDeAtividade}
-                                                    onChange={(e) => handleInputChange(atividadeIndex, 'tipoDeAtividade', e.target.value)}
-                                                >
-                                                    <option value="">Selecione...</option>
-                                                    <option value="Fisica">Física</option>
-                                                    <option value="Linguistica">Linguística</option>
-                                                    <option value="Cognitiva">Cognitiva</option>
-                                                    <option value="Socioafetiva">Socioafetiva</option>
-                                                </Form.Select>
-                                            </Form.Group>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        {atividade.exercicios.map((exercicio, exerIndex) => (
-                                            <Card key={exerIndex} className="mt-3">
-                                                <Card.Body>
-                                                    <Card.Title>Exercício {exerIndex + 1}</Card.Title>
-                                                    <Row>
-                                                        <Col md={6}>
-                                                            <Form.Group>
-                                                                <Form.Label>Mídia (Imagem/Vídeo)</Form.Label>
-                                                                <Form.Control
-                                                                    type="text"
-                                                                    value={exercicio.midia.url || ''}
-                                                                    placeholder="URL da Mídia"
-                                                                    onChange={(e) => {
-                                                                        const novasAtividades = [...selectedAtividade.atividades];
-                                                                        novasAtividades[atividadeIndex].exercicios[exerIndex].midia.url = e.target.value;
-                                                                        setSelectedAtividade({ ...selectedAtividade, atividades: novasAtividades });
-                                                                    }}
-                                                                />
-                                                            </Form.Group>
-                                                        </Col>
-                                                    </Row>
-                                                    <Col md={10}>
-                                                        <Form.Group>
-                                                            <Form.Label>Enunciado</Form.Label>
-                                                            <Form.Control
-                                                                as="textarea"
-                                                                rows={5}
-                                                                value={exercicio.enunciado}
-                                                                onChange={(e) => handleExerciseInputChange(atividadeIndex, exerIndex, 'enunciado', e.target.value)}
-                                                                placeholder="Enunciado"
-                                                            />
-                                                        </Form.Group>
-                                                    </Col>
-                                                    {exercicio.alternativas.map((alternativa, index) => (
-                                                        <Form.Group key={index} className="mt-2">
-                                                            <Row>
-                                                                <Col xs={1}>
-                                                                    <Button variant="danger" onClick={() => handleDeleteAlternativa(atividadeIndex, exerIndex, index)}>🗑</Button>
-                                                                </Col>
-                                                                <Col xs={11}>
-                                                                    <Row>
-                                                                        <Col md={8}>
-                                                                            <Form.Control
-                                                                                type="text"
-                                                                                value={alternativa.alternativa || ''}
-                                                                                placeholder="Texto da alternativa"
-                                                                                onChange={(e) => handleAlternativaChange(atividadeIndex, exerIndex, index, { target: { value: e.target.value, name: 'alternativa' } })}
-                                                                            />
-                                                                        </Col>
-                                                                        <Col md={4}>
-                                                                            <Form.Check
-                                                                                type="checkbox"
-                                                                                label="Correta"
-                                                                                checked={alternativa.resultadoAlternativa}
-                                                                                onChange={(e) => handleAlternativaChange(atividadeIndex, exerIndex, index, { target: { checked: e.target.checked, name: 'resultado' } })}
-                                                                            />
-                                                                        </Col>
-                                                                    </Row>
-                                                                </Col>
-                                                            </Row>
-                                                        </Form.Group>
-                                                    ))}
-                                                    <Button variant="secondary" onClick={() => handleAddAlternativa(atividadeIndex, exerIndex, true)}>
-                                                        Adicionar Alternativa
-                                                    </Button>
-                                                </Card.Body>
-                                            </Card>
-                                        ))}
-                                    </Row>
-                                </Card.Body>
-                            </Card>
+                                            </Col>
+                                        </Row>
+                                    </Col>
+                                </Row>
+                            </Form.Group>
                         ))}
-                        <Button variant="primary" onClick={() => handleAddAtividade(true)} className="mb-3">
+                        <br />
+                        <Button variant="secondary" onClick={() => handleAddAlternativa(atividadeIndex, exerIndex, true)}>
+                            Adicionar Alternativa
+                        </Button>
+                    </Card.Body>
+                </Card>
+            ))}
+        </Card.Body>
+    </Card>
+))}
+
+                        <br />
+                        <div className="w-100 d-flex justify-content-between">
+                          <Button variant="primary" onClick={() => handleAddAtividade(true)}>
                             Adicionar Atividade
-                        </Button>
-                        <Button variant="success" onClick={handleSaveEditAtividade}>
+                          </Button>
+                          <Button variant="success" onClick={handleSaveEditAtividade}>
                             Salvar Alterações
-                        </Button>
+                          </Button>
+                        </div>
                     </Form>
                 </Modal.Body>
             </Modal>
