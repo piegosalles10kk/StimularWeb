@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Form, Table, Image, Row, Col, Container, Card, Modal } from 'react-bootstrap';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { api } from '../utils/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function GrupoAtividades({ token }) {
   const [atividades, setAtividades] = useState([]);
@@ -14,7 +14,6 @@ export default function GrupoAtividades({ token }) {
     dominio: ['TEA'],
     atividades: [],
   });
-
   const [selectedAtividade, setSelectedAtividade] = useState({
     nomeGrupo: '',
     imagem: '',
@@ -22,13 +21,12 @@ export default function GrupoAtividades({ token }) {
     nivelDaAtividade: 1,
     atividades: [],
   });
-
   const [modalShow, setModalShow] = useState(false);
   const [modalEditShow, setModalEditShow] = useState(false);
   const [modalDeleteShow, setModalDeleteShow] = useState(false);
   const [activityToDelete, setActivityToDelete] = useState(null);
-  const tokenMidia =
-    '?sv=2022-11-02&ss=b&srt=sco&sp=rwdlaciytfx&se=2030-12-31T21:19:23Z&st=2024-11-13T13:19:23Z&spr=https&sig=RWvgyvXeVR7oCEwzfniPRRLQiA9sByWY8bnqP1d3LtI%3D';
+
+  const tokenMidia = '?sv=2022-11-02&ss=b&srt=sco&sp=rwdlaciytfx&se=2030-12-31T21:19:23Z&st=2024-11-13T13:19:23Z&spr=https&sig=RWvgyvXeVR7oCEwzfniPRRLQiA9sByWY8bnqP1d3LtI%3D';
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
@@ -44,9 +42,7 @@ export default function GrupoAtividades({ token }) {
       const fetchAtividades = async () => {
         try {
           const response = await fetch(`${api}/grupoatividades`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
           });
           const data = await response.json();
           setAtividades(data.grupos);
@@ -62,7 +58,7 @@ export default function GrupoAtividades({ token }) {
     const novasAtividades = [...novaAtividade.atividades];
     if (novasAtividades[atividadeIndex]) {
       novasAtividades[atividadeIndex][key] = value;
-      setNovaAtividade((prev) => ({ ...prev, atividades: novasAtividades }));
+      setNovaAtividade(prev => ({ ...prev, atividades: novasAtividades }));
     }
   };
 
@@ -70,24 +66,22 @@ export default function GrupoAtividades({ token }) {
     const novasAtividades = [...novaAtividade.atividades];
     if (novasAtividades[atividadeIndex]?.exercicios[exercicioIndex]) {
       novasAtividades[atividadeIndex].exercicios[exercicioIndex][key] = value;
-      setNovaAtividade((prev) => ({ ...prev, atividades: novasAtividades }));
+      setNovaAtividade(prev => ({ ...prev, atividades: novasAtividades }));
     }
   };
 
   const handleAlternativaChange = (atividadeIndex, exercicioIndex, alternativaIndex, event) => {
     const { name, value, checked } = event.target;
     const atividadesClone = [...novaAtividade.atividades];
-
     if (atividadesClone[atividadeIndex]?.exercicios[exercicioIndex]) {
       const exercicio = atividadesClone[atividadeIndex].exercicios[exercicioIndex];
-
       if (exercicio.alternativas[alternativaIndex]) {
         if (name === 'alternativa') {
           exercicio.alternativas[alternativaIndex].alternativa = value;
         } else if (name === 'resultado') {
           exercicio.alternativas[alternativaIndex].resultadoAlternativa = checked;
         }
-        setNovaAtividade((prev) => ({ ...prev, atividades: atividadesClone }));
+        setNovaAtividade(prev => ({ ...prev, atividades: atividadesClone }));
       } else {
         console.error(`Alternativa não encontrada no índice ${alternativaIndex}`);
       }
@@ -98,23 +92,19 @@ export default function GrupoAtividades({ token }) {
 
   const handleAddAlternativa = (atividadeIndex, exercicioIndex, isEdit = false) => {
     const atividadesClone = isEdit ? [...selectedAtividade.atividades] : [...novaAtividade.atividades];
-
     if (atividadesClone[atividadeIndex]?.exercicios[exercicioIndex]) {
       const novasAlternativas = {
         alternativa: '',
         resultadoAlternativa: false,
       };
-
       atividadesClone[atividadeIndex].exercicios[exercicioIndex].alternativas.push(novasAlternativas);
       if (isEdit) {
-        setSelectedAtividade((prev) => ({ ...prev, atividades: atividadesClone }));
+        setSelectedAtividade(prev => ({ ...prev, atividades: atividadesClone }));
       } else {
-        setNovaAtividade((prev) => ({ ...prev, atividades: atividadesClone }));
+        setNovaAtividade(prev => ({ ...prev, atividades: atividadesClone }));
       }
     } else {
-      console.error(
-        `Nenhum exercício encontrado na atividade ${atividadeIndex} ou índice do exercício não válido.`,
-      );
+      console.error(`Nenhum exercício encontrado na atividade ${atividadeIndex} ou índice do exercício não válido.`);
     }
   };
 
@@ -137,17 +127,21 @@ export default function GrupoAtividades({ token }) {
     };
     novasAtividades.push(newAtividade);
     if (isEdit) {
-      setSelectedAtividade((prev) => ({ ...prev, atividades: novasAtividades }));
+      setSelectedAtividade(prev => ({ ...prev, atividades: novasAtividades }));
     } else {
-      setNovaAtividade((prev) => ({ ...prev, atividades: novasAtividades }));
+      setNovaAtividade(prev => ({ ...prev, atividades: novasAtividades }));
     }
   };
 
-  const handleDeleteAlternativa = (atividadeIndex, exercicioIndex, alternativaIndex) => {
-    const atividadesClone = [...novaAtividade.atividades];
+  const handleDeleteAlternativa = (atividadeIndex, exercicioIndex, alternativaIndex, isEdit) => {
+    const atividadesClone = isEdit ? [...selectedAtividade.atividades] : [...novaAtividade.atividades];
     if (atividadesClone[atividadeIndex]?.exercicios[exercicioIndex]?.alternativas[alternativaIndex]) {
       atividadesClone[atividadeIndex].exercicios[exercicioIndex].alternativas.splice(alternativaIndex, 1);
-      setNovaAtividade((prev) => ({ ...prev, atividades: atividadesClone }));
+      if (isEdit) {
+        setSelectedAtividade(prev => ({ ...prev, atividades: atividadesClone }));
+      } else {
+        setNovaAtividade(prev => ({ ...prev, atividades: atividadesClone }));
+      }
     }
   };
 
@@ -171,7 +165,6 @@ export default function GrupoAtividades({ token }) {
           Authorization: `Bearer ${token}`,
         },
       });
-
       if (response.ok) {
         const data = await response.json(); // Certifique-se de que isso inclui a URL
         return data.url; // retorne a URL correta a partir da resposta
@@ -199,35 +192,28 @@ export default function GrupoAtividades({ token }) {
             const midiaUrl = await handleUploadFile(
               'exercicio',
               `${atividadeId}Exercicio${exerIndex}`,
-              exercicio.midia.url,
+              exercicio.midia.url instanceof File ? exercicio.midia.url : null
             );
+
             return {
-              midia: { tipoDeMidia: exercicio.midia.tipoDeMidia, url: midiaUrl },
-              enunciado: exercicio.enunciado,
-              alternativas: exercicio.alternativas,
-              pontuacao: exercicio.pontuacao,
+              ...exercicio,
+              midia: { tipoDeMidia: exercicio.midia.tipoDeMidia, url: midiaUrl || exercicio.midia.url },
             };
-          }),
+          })
         );
 
         return {
-          nomdeDaAtividade: atividade.nomdeDaAtividade,
-          fotoDaAtividade: atividadeImage ? atividadeImage : '',
-          tipoDeAtividade: atividade.tipoDeAtividade,
-          enunciado: atividade.enunciado,
+          ...atividade,
+          fotoDaAtividade: atividadeImage || atividade.fotoDaAtividade,
           exercicios: exerciciosComMidia,
-          pontuacaoTotalAtividade: 1,
         };
-      }),
+      })
     );
 
     const estruturaJSON = {
-      nomeGrupo: novaAtividade.nomeGrupo,
-      nivelDaAtividade: novaAtividade.nivelDaAtividade,
+      ...novaAtividade,
       identificador: groupId,
-      imagem: groupImage ? groupImage : '',
-      descricao: novaAtividade.descricao,
-      dominio: novaAtividade.dominio,
+      imagem: groupImage || '',
       atividades: atividadesComMidia,
     };
 
@@ -260,27 +246,25 @@ export default function GrupoAtividades({ token }) {
   const refreshAtividades = async () => {
     if (userId) {
       const response = await fetch(`${api}/grupoatividades`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       const data = await response.json();
       setAtividades(data.grupos);
     }
   };
 
-  const handleEditAtividade = async (id) => {
+  const handleEditAtividade = async id => {
     try {
       const response = await fetch(`${api}/grupoatividades/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       const data = await response.json();
+
       setSelectedAtividade({
         ...data.grupoAtividades,
         atividades: data.grupoAtividades.atividades || [],
       });
+
       setModalEditShow(true);
     } catch (error) {
       console.error('Erro ao buscar atividade:', error);
@@ -289,7 +273,45 @@ export default function GrupoAtividades({ token }) {
 
   const handleSaveEditAtividade = async () => {
     const activityId = selectedAtividade._id;
-    const updatedActivity = { ...selectedAtividade };
+
+    // Processamento de Upload da Imagem do Grupo
+    let groupImageUrl = selectedAtividade.imagem;
+    if (selectedAtividade.imagem instanceof File) {
+      const imageUrl = await handleUploadFile('group', activityId, selectedAtividade.imagem);
+      if (imageUrl) {
+        groupImageUrl = imageUrl;
+      }
+    }
+
+    const updatedActivity = {
+      ...selectedAtividade,
+      imagem: groupImageUrl, // Atualiza com a URL da imagem do grupo
+      atividades: await Promise.all(
+        selectedAtividade.atividades.map(async (atividade, atividadeIndex) => {
+          const exerciciosComMidia = await Promise.all(
+            atividade.exercicios.map(async (exercicio, exerIndex) => {
+              const midiaUrl = exercicio.midia.url instanceof File
+                ? await handleUploadFile(
+                    'exercicio',
+                    `${activityId}Exercicio${exerIndex}`,
+                    exercicio.midia.url
+                  )
+                : exercicio.midia.url;
+
+              return {
+                ...exercicio,
+                midia: { ...exercicio.midia, url: midiaUrl },
+              };
+            })
+          );
+
+          return {
+            ...atividade,
+            exercicios: exerciciosComMidia,
+          };
+        })
+      ),
+    };
 
     const response = await fetch(`${api}/grupoatividades/${activityId}`, {
       method: 'PUT',
@@ -304,8 +326,10 @@ export default function GrupoAtividades({ token }) {
       console.log('Atividade editada com sucesso!');
       setModalEditShow(false);
       refreshAtividades();
+      window.location.reload();
     } else {
-      console.error('Erro ao editar a atividade', await response.text());
+      const errorLog = await response.text();
+      console.error('Erro ao editar a atividade', errorLog);
     }
   };
 
@@ -322,10 +346,26 @@ export default function GrupoAtividades({ token }) {
     if (response.ok) {
       console.log('Atividade excluída com sucesso!');
       setModalDeleteShow(false);
-      refreshAtividades();
+      refreshAtividades();  // Chamar refreshAtividades após deletar a atividade
     } else {
       console.error('Erro ao excluir a atividade', await response.text());
     }
+  };
+
+  const updateSelectedAtividade = (atividadeIndex, key, value) => {
+    setSelectedAtividade(prev => {
+      const novasAtividades = [...prev.atividades];
+      novasAtividades[atividadeIndex][key] = value;
+      return { ...prev, atividades: novasAtividades };
+    });
+  };
+
+  const updateExercicio = (atividadeIndex, exercicioIndex, key, value) => {
+    setSelectedAtividade(prev => {
+      const novasAtividades = [...prev.atividades];
+      novasAtividades[atividadeIndex].exercicios[exercicioIndex][key] = value;
+      return { ...prev, atividades: novasAtividades };
+    });
   };
 
   return (
@@ -334,7 +374,7 @@ export default function GrupoAtividades({ token }) {
       <Button variant="success" onClick={() => setModalShow(true)}>
         Criar Atividade
       </Button>
-
+     
       {/* Modal de Criação */}
       <Modal show={modalShow} onHide={() => setModalShow(false)} size="lg" centered>
         <Modal.Header closeButton>
@@ -424,15 +464,15 @@ export default function GrupoAtividades({ token }) {
                           accept="image/*"
                           onChange={(e) => handleInputChange(atividadeIndex, 'fotoDaAtividade', e.target.files[0])}
                         />
+                        {atividade.fotoDaAtividade && (
+                          <Image
+                            src={URL.createObjectURL(atividade.fotoDaAtividade)}
+                            alt="Preview da Atividade"
+                            thumbnail
+                            style={{ marginTop: '10px', maxWidth: '100%' }}
+                          />
+                        )}
                       </Form.Group>
-                      {atividade.fotoDaAtividade && (
-                        <Image
-                          src={URL.createObjectURL(atividade.fotoDaAtividade)}
-                          alt="Preview da Atividade"
-                          thumbnail
-                          style={{ marginTop: '10px', maxWidth: '100%' }}
-                        />
-                      )}
                     </Col>
                   </Row>
                   <Row>
@@ -503,10 +543,7 @@ export default function GrupoAtividades({ token }) {
                                     />
                                   ) : (
                                     <video width="100%" controls>
-                                      <source
-                                        src={`${exercicio.midia.url}${tokenMidia}`}
-                                        type={exercicio.midia.tipoDeMidia}
-                                      />
+                                      <source src={`${exercicio.midia.url}${tokenMidia}`} type={exercicio.midia.tipoDeMidia} />
                                       Seu navegador não suporta a tag de vídeo.
                                     </video>
                                   )}
@@ -523,9 +560,7 @@ export default function GrupoAtividades({ token }) {
                                 as="textarea"
                                 rows={3}
                                 value={exercicio.enunciado}
-                                onChange={(e) =>
-                                  handleExerciseInputChange(atividadeIndex, exerIndex, 'enunciado', e.target.value)
-                                }
+                                onChange={(e) => handleExerciseInputChange(atividadeIndex, exerIndex, 'enunciado', e.target.value)}
                                 placeholder="Enunciado"
                               />
                             </Form.Group>
@@ -538,7 +573,7 @@ export default function GrupoAtividades({ token }) {
                                 <Col xs={1}>
                                   <Button
                                     variant="outline-danger"
-                                    onClick={() => handleDeleteAlternativa(atividadeIndex, exerIndex, index)}
+                                    onClick={() => handleDeleteAlternativa(atividadeIndex, exerIndex, index, false)}
                                   >
                                     🗑
                                   </Button>
@@ -577,590 +612,7 @@ export default function GrupoAtividades({ token }) {
                         </Row>
                         <Row>
                           <Col>
-                            <Button
-                              variant="secondary"
-                              onClick={() => handleAddAlternativa(atividadeIndex, exerIndex)}
-                            >
-                              Adicionar Alternativa
-                            </Button>
-                          </Col>
-                        </Row>
-                      </Card.Body>
-                    </Card>
-                  ))}
-                </Card.Body>
-              </Card>
-            ))}
-            <br />
-            <div className="w-100 d-flex justify-content-between">
-              <Button variant="primary" onClick={() => handleAddAtividade(false)}>
-                Adicionar Atividade
-              </Button>
-              <Button variant="success" onClick={handleSubmit}>
-                Salvar Grupo
-              </Button>
-            </div>
-          </Form>
-        </Modal.Body>
-      </Modal>
-
-      {/* Modal de Edição */}
-      <Modal show={modalEditShow} onHide={() => setModalEditShow(false)} size="lg" centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Editar Atividade</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Row>
-              <Col md={6}>
-                <Form.Group>
-                  <Form.Label>Imagem do Grupo</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={selectedAtividade.imagem || ''}
-                    placeholder="URL da Imagem do Grupo"
-                    onChange={(e) => setSelectedAtividade({ ...selectedAtividade, imagem: e.target.value })}
-                  />
-                </Form.Group>
-                {selectedAtividade.imagem && (
-                  <Image
-                    src={`${selectedAtividade.imagem}${tokenMidia}`}
-                    alt="Preview do Grupo"
-                    thumbnail
-                    style={{ marginTop: '10px', maxWidth: '100%' }}
-                  />
-                )}
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Form.Group>
-                  <Form.Label>Nome do Grupo</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={selectedAtividade.nomeGrupo}
-                    onChange={(e) => setSelectedAtividade({ ...selectedAtividade, nomeGrupo: e.target.value })}
-                    placeholder="Digite o nome do Grupo"
-                  />
-                </Form.Group>
-              </Col>
-              <Col md={3}>
-                <Form.Group>
-                  <Form.Label>Idade Alvo</Form.Label>
-                  <Form.Control
-                    type="number"
-                    value={selectedAtividade.nivelDaAtividade}
-                    onChange={(e) => setSelectedAtividade({ ...selectedAtividade, nivelDaAtividade: e.target.value })}
-                    placeholder="Idade (1-6)"
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={9}>
-                <Form.Group>
-                  <Form.Label>Descrição</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={3}
-                    value={selectedAtividade.descricao}
-                    onChange={(e) => setSelectedAtividade({ ...selectedAtividade, descricao: e.target.value })}
-                    placeholder="Descreva a atividade"
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            {selectedAtividade.atividades.map((atividade, atividadeIndex) => (
-              <Card className="mt-3" key={atividadeIndex}>
-                <Card.Body>
-                  <Card.Title style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    Atividade {atividadeIndex + 1}
-                    <Button
-                      variant="outline-danger"
-                      onClick={() => {
-                        const novasAtividades = selectedAtividade.atividades.filter((_, i) => i !== atividadeIndex);
-                        setSelectedAtividade({ ...selectedAtividade, atividades: novasAtividades });
-                      }}
-                    >
-                      🗑
-                    </Button>
-                  </Card.Title>
-                  <Row>
-                    <Col md={6}>
-                      <Form.Group>
-                        <Form.Label>Imagem da Atividade</Form.Label>
-                        <Form.Control
-                          type="file"
-                          accept="image/*"
-                          onChange={async (e) => {
-                            const file = e.target.files[0];
-                            if (file) {
-                              const novasAtividades = [...selectedAtividade.atividades];
-                              const atividadeId = `${userId}Grupo${selectedAtividade.atividades.length}Atividade${atividadeIndex}`;
-                              const url = await handleUploadFile('atividade', atividadeId, file);
-                              if (url) {
-                                novasAtividades[atividadeIndex].fotoDaAtividade = url;
-                                setSelectedAtividade({ ...selectedAtividade, atividades: novasAtividades });
-                              } else {
-                                console.error('Falha no upload da mídia');
-                              }
-                            }
-                          }}
-                        />
-                        {atividade.fotoDaAtividade && (
-                          <Image
-                            src={
-                              typeof atividade.fotoDaAtividade === 'string'
-                                ? `${atividade.fotoDaAtividade}${tokenMidia}`
-                                : atividade.fotoDaAtividade instanceof File
-                                ? URL.createObjectURL(atividade.fotoDaAtividade)
-                                : ''
-                            }
-                            alt="Preview da Atividade"
-                            thumbnail
-                            style={{ marginTop: '10px', maxWidth: '100%' }}
-                          />
-                        )}
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md={6}>
-                      <Form.Group>
-                        <Form.Label>Nome da Atividade</Form.Label>
-                        <Form.Control
-                          type="text"
-                          value={atividade.nomdeDaAtividade}
-                          onChange={(e) => handleInputChange(atividadeIndex, 'nomdeDaAtividade', e.target.value)}
-                          placeholder="Nome da Atividade"
-                        />
-                      </Form.Group>
-                    </Col>
-                    <Col md={6}>
-                      <Form.Group>
-                        <Form.Label>Tipo de Atividade</Form.Label>
-                        <Form.Select
-                          value={atividade.tipoDeAtividade}
-                          onChange={(e) => handleInputChange(atividadeIndex, 'tipoDeAtividade', e.target.value)}
-                        >
-                          <option value="">Selecione...</option>
-                          <option value="Fisica">Física</option>
-                          <option value="Linguistica">Linguística</option>
-                          <option value="Cognitiva">Cognitiva</option>
-                          <option value="Socioafetiva">Socioafetiva</option>
-                        </Form.Select>
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                  {atividade.exercicios.map((exercicio, exerIndex) => (
-                    <Card key={exerIndex} className="mt-3">
-                      <Card.Body>
-                        <Card.Title>Exercício {exerIndex + 1}</Card.Title>
-                        <Row>
-                          <Col md={6}>
-                            <Form.Group>
-                              <Form.Label>Mídia (Imagem/Vídeo)</Form.Label>
-                              <Form.Control
-                                type="file"
-                                accept="image/*, video/*"
-                                onChange={async (e) => {
-                                  const file = e.target.files[0];
-                                  if (file) {
-                                    const novasAtividades = [...selectedAtividade.atividades];
-                                    const atividadeId = `${userId}Grupo${selectedAtividade.atividades.length}Atividade${atividadeIndex}`;
-                                    const exercicioId = `${atividadeId}Exercicio${exerIndex}`;
-                                    const url = await handleUploadFile('exercicio', exercicioId, file);
-                                    if (url) {
-                                      novasAtividades[atividadeIndex].exercicios[exerIndex].midia = {
-                                        tipoDeMidia: file.type,
-                                        url: url,
-                                      };
-                                      setSelectedAtividade({ ...selectedAtividade, atividades: novasAtividades });
-                                    } else {
-                                      console.error('Falha no upload da mídia');
-                                    }
-                                  }
-                                }}
-                              />
-                              {exercicio.midia.url && (
-                                <div style={{ marginTop: '10px' }}>
-                                  {exercicio.midia.tipoDeMidia.includes('image') ? (
-                                    <Image
-                                      src={`${exercicio.midia.url}${tokenMidia}`}
-                                      alt="Preview do Exercício"
-                                      thumbnail
-                                      style={{ maxWidth: '100%' }}
-                                    />
-                                  ) : (
-                                    <video width="100%" controls>
-                                      <source
-                                        src={`${exercicio.midia.url}${tokenMidia}`}
-                                        type={exercicio.midia.tipoDeMidia}
-                                      />
-                                      Seu navegador não suporta a tag de vídeo.
-                                    </video>
-                                  )}
-                                </div>
-                              )}
-                            </Form.Group>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col md={10}>
-                            <Form.Group>
-                              <Form.Label>Enunciado</Form.Label>
-                              <Form.Control
-                                as="textarea"
-                                rows={3}
-                                value={exercicio.enunciado}
-                                onChange={(e) =>
-                                  handleExerciseInputChange(atividadeIndex, exerIndex, 'enunciado', e.target.value)
-                                }
-                                placeholder="Enunciado"
-                              />
-                            </Form.Group>
-                          </Col>
-                        </Row>
-                        <Row>
-                          {exercicio.alternativas.map((alternativa, index) => (
-                            <Form.Group key={index} className="mt-2">
-                              <Row>
-                                <Col xs={1}>
-                                  <Button
-                                    variant="outline-danger"
-                                    onClick={() => handleDeleteAlternativa(atividadeIndex, exerIndex, index)}
-                                  >
-                                    🗑
-                                  </Button>
-                                </Col>
-                                <Col xs={11}>
-                                  <Row>
-                                    <Col md={8}>
-                                      <Form.Control
-                                        type="text"
-                                        value={alternativa.alternativa || ''}
-                                        placeholder="Texto da alternativa"
-                                        onChange={(e) =>
-                                          handleAlternativaChange(atividadeIndex, exerIndex, index, {
-                                            target: { value: e.target.value, name: 'alternativa' },
-                                          })
-                                        }
-                                      />
-                                    </Col>
-                                    <Col md={4}>
-                                      <Form.Check
-                                        type="checkbox"
-                                        label="Correta"
-                                        checked={alternativa.resultadoAlternativa}
-                                        onChange={(e) =>
-                                          handleAlternativaChange(atividadeIndex, exerIndex, index, {
-                                            target: { checked: e.target.checked, name: 'resultado' },
-                                          })
-                                        }
-                                      />
-                                    </Col>
-                                  </Row>
-                                </Col>
-                              </Row>
-                            </Form.Group>
-                          ))}
-                        </Row>
-                        <Row>
-                          <Col>
-                            <Button
-                              variant="secondary"
-                              onClick={() => handleAddAlternativa(atividadeIndex, exerIndex)}
-                            >
-                              Adicionar Alternativa
-                            </Button>
-                          </Col>
-                        </Row>
-                      </Card.Body>
-                    </Card>
-                  ))}
-                </Card.Body>
-              </Card>
-            ))}
-            <br />
-            <div className="w-100 d-flex justify-content-between">
-              <Button variant="primary" onClick={() => handleAddAtividade(false)}>
-                Adicionar Atividade
-              </Button>
-              <Button variant="success" onClick={handleSubmit}>
-                Salvar Grupo
-              </Button>
-            </div>
-          </Form>
-        </Modal.Body>
-      </Modal>
-
-      {/* Modal de Edição */}
-      <Modal show={modalEditShow} onHide={() => setModalEditShow(false)} size="lg" centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Editar Atividade</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Row>
-              <Col md={6}>
-                <Form.Group>
-                  <Form.Label>Imagem do Grupo</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={selectedAtividade.imagem || ''}
-                    placeholder="URL da Imagem do Grupo"
-                    onChange={(e) => setSelectedAtividade({ ...selectedAtividade, imagem: e.target.value })}
-                  />
-                </Form.Group>
-                {selectedAtividade.imagem && (
-                  <Image
-                    src={`${selectedAtividade.imagem}${tokenMidia}`}
-                    alt="Preview do Grupo"
-                    thumbnail
-                    style={{ marginTop: '10px', maxWidth: '100%' }}
-                  />
-                )}
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Form.Group>
-                  <Form.Label>Nome do Grupo</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={selectedAtividade.nomeGrupo}
-                    onChange={(e) => setSelectedAtividade({ ...selectedAtividade, nomeGrupo: e.target.value })}
-                    placeholder="Digite o nome do Grupo"
-                  />
-                </Form.Group>
-              </Col>
-              <Col md={3}>
-                <Form.Group>
-                  <Form.Label>Idade Alvo</Form.Label>
-                  <Form.Control
-                    type="number"
-                    value={selectedAtividade.nivelDaAtividade}
-                    onChange={(e) => setSelectedAtividade({ ...selectedAtividade, nivelDaAtividade: e.target.value })}
-                    placeholder="Idade (1-6)"
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={9}>
-                <Form.Group>
-                  <Form.Label>Descrição</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={3}
-                    value={selectedAtividade.descricao}
-                    onChange={(e) => setSelectedAtividade({ ...selectedAtividade, descricao: e.target.value })}
-                    placeholder="Descreva a atividade"
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            {selectedAtividade.atividades.map((atividade, atividadeIndex) => (
-              <Card className="mt-3" key={atividadeIndex}>
-                <Card.Body>
-                  <Card.Title style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    Atividade {atividadeIndex + 1}
-                    <Button
-                      variant="outline-danger"
-                      onClick={() => {
-                        const novasAtividades = selectedAtividade.atividades.filter((_, i) => i !== atividadeIndex);
-                        setSelectedAtividade({ ...selectedAtividade, atividades: novasAtividades });
-                      }}
-                    >
-                      🗑
-                    </Button>
-                  </Card.Title>
-                  <Row>
-                    <Col md={6}>
-                      <Form.Group>
-                        <Form.Label>Imagem da Atividade</Form.Label>
-                        <Form.Control
-                          type="file"
-                          accept="image/*"
-                          onChange={async (e) => {
-                            const file = e.target.files[0];
-                            if (file) {
-                              const novasAtividades = [...selectedAtividade.atividades];
-                              const atividadeId = `${userId}Grupo${selectedAtividade.atividades.length}Atividade${atividadeIndex}`;
-                              const url = await handleUploadFile('atividade', atividadeId, file);
-                              if (url) {
-                                novasAtividades[atividadeIndex].fotoDaAtividade = url;
-                                setSelectedAtividade({ ...selectedAtividade, atividades: novasAtividades });
-                              } else {
-                                console.error('Falha no upload da mídia');
-                              }
-                            }
-                          }}
-                        />
-                        {atividade.fotoDaAtividade && (
-                          <Image
-                            src={
-                              typeof atividade.fotoDaAtividade === 'string'
-                                ? `${atividade.fotoDaAtividade}${tokenMidia}`
-                                : atividade.fotoDaAtividade instanceof File
-                                ? URL.createObjectURL(atividade.fotoDaAtividade)
-                                : ''
-                            }
-                            alt="Preview da Atividade"
-                            thumbnail
-                            style={{ marginTop: '10px', maxWidth: '100%' }}
-                          />
-                        )}
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md={6}>
-                      <Form.Group>
-                        <Form.Label>Nome da Atividade</Form.Label>
-                        <Form.Control
-                          type="text"
-                          value={atividade.nomdeDaAtividade}
-                          onChange={(e) => handleInputChange(atividadeIndex, 'nomdeDaAtividade', e.target.value)}
-                          placeholder="Nome da Atividade"
-                        />
-                      </Form.Group>
-                    </Col>
-                    <Col md={6}>
-                      <Form.Group>
-                        <Form.Label>Tipo de Atividade</Form.Label>
-                        <Form.Select
-                          value={atividade.tipoDeAtividade}
-                          onChange={(e) => handleInputChange(atividadeIndex, 'tipoDeAtividade', e.target.value)}
-                        >
-                          <option value="">Selecione...</option>
-                          <option value="Fisica">Física</option>
-                          <option value="Linguistica">Linguística</option>
-                          <option value="Cognitiva">Cognitiva</option>
-                          <option value="Socioafetiva">Socioafetiva</option>
-                        </Form.Select>
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                  {atividade.exercicios.map((exercicio, exerIndex) => (
-                    <Card key={exerIndex} className="mt-3">
-                      <Card.Body>
-                        <Card.Title>Exercício {exerIndex + 1}</Card.Title>
-                        <Row>
-                          <Col md={6}>
-                            <Form.Group>
-                              <Form.Label>Mídia (Imagem/Vídeo)</Form.Label>
-                              <Form.Control
-                                type="file"
-                                accept="image/*, video/*"
-                                onChange={async (e) => {
-                                  const file = e.target.files[0];
-                                  if (file) {
-                                    const novasAtividades = [...selectedAtividade.atividades];
-                                    const atividadeId = `${userId}Grupo${selectedAtividade.atividades.length}Atividade${atividadeIndex}`;
-                                    const exercicioId = `${atividadeId}Exercicio${exerIndex}`;
-                                    const url = await handleUploadFile('exercicio', exercicioId, file);
-                                    if (url) {
-                                      novasAtividades[atividadeIndex].exercicios[exerIndex].midia = {
-                                        tipoDeMidia: file.type,
-                                        url: url,
-                                      };
-                                      setSelectedAtividade({ ...selectedAtividade, atividades: novasAtividades });
-                                    } else {
-                                      console.error('Falha no upload da mídia');
-                                    }
-                                  }
-                                }}
-                              />
-                              {exercicio.midia.url && (
-                                <div style={{ marginTop: '10px' }}>
-                                  {exercicio.midia.tipoDeMidia.includes('image') ? (
-                                    <Image
-                                      src={`${exercicio.midia.url}${tokenMidia}`}
-                                      alt="Preview do Exercício"
-                                      thumbnail
-                                      style={{ maxWidth: '100%' }}
-                                    />
-                                  ) : (
-                                    <video width="100%" controls>
-                                      <source
-                                        src={`${exercicio.midia.url}${tokenMidia}`}
-                                        type={exercicio.midia.tipoDeMidia}
-                                      />
-                                      Seu navegador não suporta a tag de vídeo.
-                                    </video>
-                                  )}
-                                </div>
-                              )}
-                            </Form.Group>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col md={10}>
-                            <Form.Group>
-                              <Form.Label>Enunciado</Form.Label>
-                              <Form.Control
-                                as="textarea"
-                                rows={3}
-                                value={exercicio.enunciado}
-                                onChange={(e) =>
-                                  handleExerciseInputChange(atividadeIndex, exerIndex, 'enunciado', e.target.value)
-                                }
-                                placeholder="Enunciado"
-                              />
-                            </Form.Group>
-                          </Col>
-                        </Row>
-                        <Row>
-                          {exercicio.alternativas.map((alternativa, index) => (
-                            <Form.Group key={index} className="mt-2">
-                              <Row>
-                                <Col xs={1}>
-                                  <Button
-                                    variant="outline-danger"
-                                    onClick={() => handleDeleteAlternativa(atividadeIndex, exerIndex, index)}
-                                  >
-                                    🗑
-                                  </Button>
-                                </Col>
-                                <Col xs={11}>
-                                  <Row>
-                                    <Col md={8}>
-                                      <Form.Control
-                                        type="text"
-                                        value={alternativa.alternativa || ''}
-                                        placeholder="Texto da alternativa"
-                                        onChange={(e) =>
-                                          handleAlternativaChange(atividadeIndex, exerIndex, index, {
-                                            target: { value: e.target.value, name: 'alternativa' },
-                                          })
-                                        }
-                                      />
-                                    </Col>
-                                    <Col md={4}>
-                                      <Form.Check
-                                        type="checkbox"
-                                        label="Correta"
-                                        checked={alternativa.resultadoAlternativa}
-                                        onChange={(e) =>
-                                          handleAlternativaChange(atividadeIndex, exerIndex, index, {
-                                            target: { checked: e.target.checked, name: 'resultado' },
-                                          })
-                                        }
-                                      />
-                                    </Col>
-                                  </Row>
-                                </Col>
-                              </Row>
-                            </Form.Group>
-                          ))}
-                        </Row>
-                        <Row>
-                          <Col>
-                            <Button
-                              variant="secondary"
-                              onClick={() => handleAddAlternativa(atividadeIndex, exerIndex)}
-                            >
+                            <Button variant="secondary" onClick={() => handleAddAlternativa(atividadeIndex, exerIndex, false)}>
                               Adicionar Alternativa
                             </Button>
                           </Col>
@@ -1284,7 +736,7 @@ export default function GrupoAtividades({ token }) {
                         <Form.Label>Imagem da Atividade</Form.Label>
                         <Form.Control
                           type="file"
-                          accept="image/*, video/*"
+                          accept="image/*"
                           onChange={async (e) => {
                             const file = e.target.files[0];
                             if (file) {
@@ -1324,7 +776,7 @@ export default function GrupoAtividades({ token }) {
                         <Form.Control
                           type="text"
                           value={atividade.nomdeDaAtividade}
-                          onChange={(e) => handleInputChange(atividadeIndex, 'nomdeDaAtividade', e.target.value)}
+                          onChange={(e) => updateSelectedAtividade(atividadeIndex, 'nomdeDaAtividade', e.target.value)}
                           placeholder="Nome da Atividade"
                         />
                       </Form.Group>
@@ -1334,7 +786,7 @@ export default function GrupoAtividades({ token }) {
                         <Form.Label>Tipo de Atividade</Form.Label>
                         <Form.Select
                           value={atividade.tipoDeAtividade}
-                          onChange={(e) => handleInputChange(atividadeIndex, 'tipoDeAtividade', e.target.value)}
+                          onChange={(e) => updateSelectedAtividade(atividadeIndex, 'tipoDeAtividade', e.target.value)}
                         >
                           <option value="">Selecione...</option>
                           <option value="Fisica">Física</option>
@@ -1359,16 +811,15 @@ export default function GrupoAtividades({ token }) {
                                 onChange={async (e) => {
                                   const file = e.target.files[0];
                                   if (file) {
-                                    const novasAtividades = [...selectedAtividade.atividades];
-                                    const atividadeId = `${userId}Grupo${selectedAtividade.atividades.length}Atividade${atividadeIndex}`;
-                                    const exercicioId = `${atividadeId}Exercicio${exerIndex}`;
-                                    const url = await handleUploadFile('exercicio', exercicioId, file);
+                                    const atividadesClone = [...selectedAtividade.atividades];
+                                    const atividadeId = `${userId}Grupo${selectedAtividade.atividades.length}Atividade${atividadeIndex}Exercicio${exerIndex}`;
+                                    const url = await handleUploadFile('exercicio', atividadeId, file);
                                     if (url) {
-                                      novasAtividades[atividadeIndex].exercicios[exerIndex].midia = {
+                                      atividadesClone[atividadeIndex].exercicios[exerIndex].midia = {
                                         tipoDeMidia: file.type,
                                         url: url,
                                       };
-                                      setSelectedAtividade({ ...selectedAtividade, atividades: novasAtividades });
+                                      setSelectedAtividade({ ...selectedAtividade, atividades: atividadesClone });
                                     } else {
                                       console.error('Falha no upload da mídia');
                                     }
@@ -1386,10 +837,7 @@ export default function GrupoAtividades({ token }) {
                                     />
                                   ) : (
                                     <video width="100%" controls>
-                                      <source
-                                        src={`${exercicio.midia.url}${tokenMidia}`}
-                                        type={exercicio.midia.tipoDeMidia}
-                                      />
+                                      <source src={`${exercicio.midia.url}${tokenMidia}`} type={exercicio.midia.tipoDeMidia} />
                                       Seu navegador não suporta a tag de vídeo.
                                     </video>
                                   )}
@@ -1406,9 +854,7 @@ export default function GrupoAtividades({ token }) {
                                 as="textarea"
                                 rows={3}
                                 value={exercicio.enunciado}
-                                onChange={(e) =>
-                                  handleExerciseInputChange(atividadeIndex, exerIndex, 'enunciado', e.target.value)
-                                }
+                                onChange={(e) => updateExercicio(atividadeIndex, exerIndex, 'enunciado', e.target.value)}
                                 placeholder="Enunciado"
                               />
                             </Form.Group>
@@ -1421,7 +867,7 @@ export default function GrupoAtividades({ token }) {
                                 <Col xs={1}>
                                   <Button
                                     variant="outline-danger"
-                                    onClick={() => handleDeleteAlternativa(atividadeIndex, exerIndex, index)}
+                                    onClick={() => handleDeleteAlternativa(atividadeIndex, exerIndex, index, true)}
                                   >
                                     🗑
                                   </Button>
@@ -1434,8 +880,10 @@ export default function GrupoAtividades({ token }) {
                                         value={alternativa.alternativa || ''}
                                         placeholder="Texto da alternativa"
                                         onChange={(e) =>
-                                          handleAlternativaChange(atividadeIndex, exerIndex, index, {
-                                            target: { value: e.target.value, name: 'alternativa' },
+                                          setSelectedAtividade(prev => {
+                                            const novasAtividades = [...prev.atividades];
+                                            novasAtividades[atividadeIndex].exercicios[exerIndex].alternativas[index].alternativa = e.target.value;
+                                            return { ...prev, atividades: novasAtividades };
                                           })
                                         }
                                       />
@@ -1446,8 +894,10 @@ export default function GrupoAtividades({ token }) {
                                         label="Correta"
                                         checked={alternativa.resultadoAlternativa}
                                         onChange={(e) =>
-                                          handleAlternativaChange(atividadeIndex, exerIndex, index, {
-                                            target: { checked: e.target.checked, name: 'resultado' },
+                                          setSelectedAtividade(prev => {
+                                            const novasAtividades = [...prev.atividades];
+                                            novasAtividades[atividadeIndex].exercicios[exerIndex].alternativas[index].resultadoAlternativa = e.target.checked;
+                                            return { ...prev, atividades: novasAtividades };
                                           })
                                         }
                                       />
@@ -1460,10 +910,7 @@ export default function GrupoAtividades({ token }) {
                         </Row>
                         <Row>
                           <Col>
-                            <Button
-                              variant="secondary"
-                              onClick={() => handleAddAlternativa(atividadeIndex, exerIndex)}
-                            >
+                            <Button variant="secondary" onClick={() => handleAddAlternativa(atividadeIndex, exerIndex, true)}>
                               Adicionar Alternativa
                             </Button>
                           </Col>
@@ -1476,11 +923,11 @@ export default function GrupoAtividades({ token }) {
             ))}
             <br />
             <div className="w-100 d-flex justify-content-between">
-              <Button variant="primary" onClick={() => handleAddAtividade(false)}>
+              <Button variant="primary" onClick={() => handleAddAtividade(true)}>
                 Adicionar Atividade
               </Button>
-              <Button variant="success" onClick={handleSubmit}>
-                Salvar Grupo
+              <Button variant="success" onClick={handleSaveEditAtividade}>
+                Salvar Alterações
               </Button>
             </div>
           </Form>
@@ -1513,6 +960,7 @@ export default function GrupoAtividades({ token }) {
             <th>Nome do grupo</th>
             <th>Descrição</th>
             <th>Criador</th>
+            <th>Grupo</th>
             <th>Ações</th>
           </tr>
         </thead>
@@ -1533,6 +981,7 @@ export default function GrupoAtividades({ token }) {
                 {atividade.descricao}
               </td>
               <td>{`${atividade.criador.nome}`}</td>
+              <td>{`${atividade.dominio} ${atividade.nivelDaAtividade} ano(s)`}</td>
               <td>
                 <Button variant="primary" onClick={() => handleEditAtividade(atividade._id)}>
                   ✏
