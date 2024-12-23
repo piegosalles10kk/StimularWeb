@@ -126,9 +126,6 @@ function App() {
                 <h1>BackOffice Stimular</h1>
                     <Nav fill variant="tabs" defaultActiveKey="/home">
                         <Nav.Item>
-                            <Nav.Link as={Link} to="/">Home</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
                             <Nav.Link as={Link} to="/usuarios">Usuarios</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
