@@ -395,13 +395,16 @@ export default function Atividades({ token }) {
     }
   };
 
-  const updateSelectedAtividade = (exerIndex, key, value) => {
-    const exerciciosClone = [...selectedAtividade.exercicios];
-    if (exerciciosClone[exerIndex]) {
-      exerciciosClone[exerIndex][key] = value;
-      setSelectedAtividade(prev => ({ ...prev, exercicios: exerciciosClone }));
-    }
-  };
+  const updateSelectedAtividade = (exerIndex, field, index, key, value) => {
+      const exerciciosClone = [...selectedAtividade.exercicios];
+      if (field === 'alternativas' && exerciciosClone[exerIndex]) {
+        exerciciosClone[exerIndex][field][index][key] = value;
+      } else if (exerciciosClone[exerIndex]) {
+        exerciciosClone[exerIndex][key] = value;
+      }
+      setSelectedAtividade(prev => ({ ...prev, exercicios: exerciciosClone }));
+    };
+    
 
   return (
     <Container className="container mt-5">
@@ -826,7 +829,7 @@ export default function Atividades({ token }) {
                                   type="text"
                                   value={alternativa.alternativa || ''}
                                   placeholder="Texto da alternativa"
-                                  onChange={(e) => handleAlternativaChange(exerIndex, alternativaIndex, { target: { value: e.target.value, name: 'alternativa' } })}
+                                  onChange={(e) => updateSelectedAtividade(exerIndex, 'alternativas', alternativaIndex, 'alternativa', e.target.value)}
                                 />
                               </Col>
                               <Col md={4}>
@@ -834,7 +837,7 @@ export default function Atividades({ token }) {
                                   type="checkbox"
                                   label="Correta"
                                   checked={alternativa.resultadoAlternativa}
-                                  onChange={(e) => handleAlternativaChange(exerIndex, alternativaIndex, { target: { checked: e.target.checked, name: 'resultado' } })}
+                                  onChange={(e) => updateSelectedAtividade(exerIndex, 'alternativas', alternativaIndex, 'resultadoAlternativa', e.target.checked)}
                                 />
                               </Col>
                             </Row>

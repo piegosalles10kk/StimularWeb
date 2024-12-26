@@ -5,10 +5,14 @@ import { api } from '../utils/api';
 const IMAGE_URL = 'https://stimularmidias.blob.core.windows.net/midias/6c0ab0a4-110f-4ce5-88c3-9c39ee10dba6.jpg';
 const tokenMidia = '?sv=2022-11-02&ss=b&srt=sco&sp=rwdlaciytfx&se=2030-12-31T21:19:23Z&st=2024-11-13T13:19:23Z&spr=https&sig=RWvgyvXeVR7oCEwzfniPRRLQiA9sByWY8bnqP1d3LtI%3D';
 
-const fixedProfessional = {
-  idDoProfissional: '672243e4effa46003373d4f4',
-  nome: 'Stimular',
-};
+const fixedProfessional = [
+  { idDoProfissional: '672243e4effa46003373d4f4', nome: 'Stimular' },
+  { idDoProfissional: '6769bece33989546e360a712', nome: 'Crislaine Freires de Brito' },
+  { idDoProfissional: '6769beb733989546e360a6dc', nome: 'Daniela Aparecida Marques Alamino' },
+  { idDoProfissional: '6769be8d33989546e360a6a7', nome: 'Thally Caponi' },
+  { idDoProfissional: '6769be6633989546e360a673', nome: 'Kátea Paula de Lima' },
+  { idDoProfissional: '6769be0333989546e360a640', nome: 'Isabel Aguiar' },
+];
 
 class UsuariosCadastrados extends Component {
   constructor(props) {
@@ -37,7 +41,7 @@ class UsuariosCadastrados extends Component {
     tipoDeConta: 'Paciente',
     grupo: [],
     foto: IMAGE_URL,
-    profissional: [],
+    profissional: fixedProfessional,
     validade: this.calculateValidity('Paciente'),
     moeda: { valor: 1, dataDeCriacao: new Date() },
     nivel: 0,
@@ -81,10 +85,10 @@ class UsuariosCadastrados extends Component {
         Authorization: `Bearer ${token}`,
       },
     })
-    .then((response) => response.json())
-    .then((dados) => {
-      this.setState({ usuarios: dados.users });
-    });
+      .then((response) => response.json())
+      .then((dados) => {
+        this.setState({ usuarios: dados.users });
+      });
   };
 
   tornarUsuarioInativo = async (id) => {
@@ -134,11 +138,13 @@ class UsuariosCadastrados extends Component {
       if (field === 'tipoDeConta') {
         if (value === 'Admin') {
           updatedGroup = ['Admin'];
+          updatedProfessional = [];
         } else if (value === 'Profissional') {
-          updatedProfessional = [fixedProfessional];
+          updatedProfessional = [...fixedProfessional];
           updatedGroup = ['Profissional'];
         } else if (value === 'Paciente' && !updatedGroup.length) {
           updatedGroup = [];
+          updatedProfessional = [];
         }
         updatedValidity = this.calculateValidity(value);
       }
@@ -242,9 +248,9 @@ class UsuariosCadastrados extends Component {
   handleEditUser = (id) => {
     const user = this.state.usuarios.find((usuario) => usuario._id === id);
     this.setState({
-      selectedUser: { 
-        ...user, 
-        dataDeNascimento: this.convertToDateInputFormat(user.dataDeNascimento) 
+      selectedUser: {
+        ...user,
+        dataDeNascimento: this.convertToDateInputFormat(user.dataDeNascimento)
       },
       showModalEdit: true,
     });
@@ -279,7 +285,6 @@ class UsuariosCadastrados extends Component {
 
   handleDeleteUsuario = async (id) => {
     const { token } = this.props;
-
     const response = await fetch(`${api}/usuario/status/${id}`, {
       method: 'PUT',
       headers: {
@@ -307,7 +312,6 @@ class UsuariosCadastrados extends Component {
 
   convertToDatabaseFormat = (dateString) => {
     if (!dateString) return '';
-
     const [day, month, year] = dateString.split('/');
     if (year && month && day) {
       return `${day}/${month}/${year}`;
@@ -317,7 +321,6 @@ class UsuariosCadastrados extends Component {
 
   renderTabela() {
     const { usuarios, searchQuery, filterTipoDeConta } = this.state;
-
     const filteredUsuarios = usuarios.filter((usuario) => {
       const query = searchQuery.toLowerCase();
       const matches =
@@ -336,7 +339,7 @@ class UsuariosCadastrados extends Component {
     return (
       <div className="container mt-5">
         <h1>Todos os usuários</h1>
-        <br/>
+        <br />
         <Row className="align-items-center mb-4">
           <Col xs="auto">
             <Button variant="success" onClick={() => this.setState({ showModal: true })}>
@@ -399,16 +402,10 @@ class UsuariosCadastrados extends Component {
                 <td>{usuario.tipoDeConta}</td>
                 <td>{usuario.grupo.join(', ')}</td>
                 <td>
-                  <Button
-                    variant="primary"
-                    onClick={() => this.handleEditUser(usuario._id)}
-                  >
+                  <Button variant="primary" onClick={() => this.handleEditUser(usuario._id)}>
                     ✏
                   </Button>{" "}
-                  <Button
-                    variant="danger"
-                    onClick={() => this.handleShowDeleteModal(usuario._id)}
-                  >
+                  <Button variant="danger" onClick={() => this.handleShowDeleteModal(usuario._id)}>
                     ❌
                   </Button>
                 </td>
@@ -448,7 +445,7 @@ class UsuariosCadastrados extends Component {
                     <Form.Control
                       type="email"
                       value={this.state.selectedUser.email}
-                      onChange={(e) => this.handleInputChange('email', e.target.value)}
+                      onChange={( e) => this.handleInputChange('email', e.target.value)}
                       placeholder="Digite o email"
                     />
                   </Form.Group>
