@@ -3,9 +3,11 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import {Nav, Button, Image} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Home from './componentes/Home';
-import UsuariosCadastrados from './componentes/Usuarios';
-import AtividadesCadastradas from './componentes/GrupoAtividades';
+import Home from './tabs/Home';
+import UsuariosCadastrados from './tabs/Usuarios';
+import AtividadesCadastradas from './tabs/GrupoAtividades';
+import Mural from './tabs/Mural';
+import StimularUpdates from './tabs/StimularUpdates';
 import Logo from './assets/Logo.png';
 import { api } from './utils/api';
 
@@ -33,7 +35,7 @@ function Login({ onLogin }) {
               if (data.tipoDeConta === 'Admin') {
                   // Armazenar o id e o token no AsyncStorage
                   await AsyncStorage.setItem('id', data.id); // Agora deve armazenar o id corretamente
-                  console.log('ID salvo:', data.id); // Confirme que o ID está sendo salvo
+                  //console.log('ID salvo:', data.id); // Confirme que o ID está sendo salvo
                   onLogin(data.token); // Chama a função para armazenar o token
               } else {
                   alert('Acesso restrito a administradores');
@@ -46,6 +48,7 @@ function Login({ onLogin }) {
           alert('Erro durante a autenticação. Tente novamente.');
       }
   };
+  
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -107,8 +110,6 @@ function App() {
                 setIsAuthenticated(true);
                 setToken(storedToken);
             }
-
-            console.log('ID recuperado:', storedId); // Exemplo de uso
         };
 
         loadStoredData();
@@ -126,20 +127,31 @@ function App() {
                 <h1>BackOffice Stimular</h1>
                     <Nav fill variant="tabs" defaultActiveKey="/home">
                         <Nav.Item>
+                            <Nav.Link as={Link} to="/">Home</Nav.Link>
+                        </Nav.Item>
+
+                        <Nav.Item>
+                            <Nav.Link as={Link} to="/mural">Mural</Nav.Link>
+                        </Nav.Item>
+
+                        <Nav.Item>
                             <Nav.Link as={Link} to="/usuarios">Usuarios</Nav.Link>
                         </Nav.Item>
+
                         <Nav.Item>
                             <Nav.Link as={Link} to="/atividades">Atividades</Nav.Link>
                         </Nav.Item>
+                        
                         <Nav.Item>
                         <Button variant="outline-danger" onClick={handleLogout}>Logout</Button>                        
                         </Nav.Item>
                     </Nav>
 
                     <Routes>
-                        <Route path="/" element={<Home />} />
+                        <Route path="/" element={<Home token={token} />} />
                         <Route path="/usuarios" element={<UsuariosCadastrados token={token} />} />
                         <Route path="/atividades" element={<AtividadesCadastradas token={token} />} />
+                        <Route path="/mural" element={<Mural token={token}/>} />
                     </Routes>
                 </BrowserRouter>
             )}

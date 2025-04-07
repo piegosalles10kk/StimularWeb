@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Atualizações</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Gerenciamento de Atualizações</h1>
+
+    <form id="atualizacaoForm">
+        <h2>Adicionar Atualização</h2>
+        <div class="input-group">
+            <input type="text" id="tituloAtualizacao" placeholder="Título da Atualização" required>
+            <textarea id="descricaoAtualizacao" placeholder="Descrição" required></textarea>
+        </div>
+        <div id="tarefasContainer">
+            <h3>Tarefas</h3>
+            <div class="tarefa">
+                <h2>Tarefa 1</h2>
+                <input type="text" class="tituliDaTarefa" placeholder="Título da Tarefa" required>
+                <select class="tipoDeTarefa" required>
+                    <option value="" disabled selected>Selecione o Tipo de Tarefa</option>
+                    <option value="Documentação">Documentação</option>
+                    <option value="Design">Design</option>
+                    <option value="Front-end">Front-end</option>
+                    <option value="Back-end">Back-end</option>
+                    <option value="Data">Data</option>
+                    <option value="DevOps">DevOps</option>
+                    <option value="Arquitetura">Arquitetura</option>
+                    <option value="PlayStore/AppStore">PlayStore/AppStore</option>
+                </select>
+                <textarea class="descricaoTarefa" placeholder="Descrição da Tarefa" required></textarea>
+                <button type="button" class="removeTarefaBtn" style="background-color: #dc3545; float: right;">Remover</button>
+                <div class="dataFinalizacao"></div>
+            </div>
+        </div>
+        <div class="button-container">
+            <button type="button" id="addTaskBtn" >Adicionar Nova Tarefa</button>
+        </div>
+
+        <div class="button-container">
+            <button type="submit" class="btn-green" style="margin-bottom: 10%; margin-top: 5%;">Adicionar Atualização</button>
+        </div>
+    </form>
+
+    <h2>Lista de Atualizações</h2>
+    <div id="atualizacoesList"></div>
+</div>
+
+<!-- Modal de Edição -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Editar Atualização</h2>
+        <div class="input-group">
+            <input type="text" id="editTituloAtualizacao" placeholder="Título da Atualização" required>
+            <textarea id="editDescricaoAtualizacao" placeholder="Descrição" required></textarea>
+        </div>
+        <div id="editTarefasContainer"></div>
+        
+        <div class="button-container">
+            <button type="button" id="editAddTaskBtn">Adicionar Nova Tarefa</button>
+        </div>
+        <div class="button-container">
+            <button id="saveChanges" class="btn-green">Salvar Alterações</button>
+        </div>
+
+    </div>
+</div>
+
+<!-- Modal de Confirmação de Deleção -->
+<div id="confirmDeleteModal" class="modal">
+    <div class="modal-content">
+        <h2>Confirmação</h2>
+        <p>Você tem certeza que deseja deletar esta atualização?</p>
+        <button id="confirmDelete" class="btn-red">Sim</button>
+        <button id="cancelDelete">Não</button>
+    </div>
+</div>
+
+<script src="scripts.js" type="module"></script>
+</body>
+</html>

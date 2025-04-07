@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Table, Button, Modal, Form, Col, Row, Image, Dropdown } from 'react-bootstrap';
 import { api } from '../utils/api';
+import { tokenMidia } from "../utils/tokenMidia";
+
 
 const IMAGE_URL = 'https://stimularmidias.blob.core.windows.net/midias/6c0ab0a4-110f-4ce5-88c3-9c39ee10dba6.jpg';
-const tokenMidia = '?sv=2022-11-02&ss=b&srt=sco&sp=rwdlaciytfx&se=2030-12-31T21:19:23Z&st=2024-11-13T13:19:23Z&spr=https&sig=RWvgyvXeVR7oCEwzfniPRRLQiA9sByWY8bnqP1d3LtI%3D';
 
 const fixedProfessional = [
   { idDoProfissional: '672243e4effa46003373d4f4', nome: 'Stimular' },
@@ -13,6 +14,8 @@ const fixedProfessional = [
   { idDoProfissional: '6769be6633989546e360a673', nome: 'Kátea Paula de Lima' },
   { idDoProfissional: '6769be0333989546e360a640', nome: 'Isabel Aguiar' },
 ];
+
+
 
 class UsuariosCadastrados extends Component {
   constructor(props) {
@@ -79,6 +82,7 @@ class UsuariosCadastrados extends Component {
   }
 
   buscarUsuarios = () => {
+    
     const { token } = this.props;
     fetch(`${api}/user-ativos`, {
       headers: {
@@ -375,6 +379,8 @@ class UsuariosCadastrados extends Component {
               </Dropdown.Menu>
             </Dropdown>
           </Col>
+
+
         </Row>
         <Table striped bordered hover responsive>
           <thead>

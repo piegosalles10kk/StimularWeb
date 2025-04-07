@@ -3,6 +3,8 @@ import { Button, Form, Table, Image, Row, Col, Container, Card, Modal, Dropdown 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { api } from '../utils/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { tokenMidia } from "../utils/tokenMidia";
+
 
 export default function Atividades({ token }) {
   const [atividades, setAtividades] = useState([]);
@@ -44,7 +46,6 @@ export default function Atividades({ token }) {
 
   const [filteredAtividades, setFilteredAtividades] = useState([]);
 
-  const tokenMidia = '?sv=2022-11-02&ss=b&srt=sco&sp=rwdlaciytfx&se=2030-12-31T21:19:23Z&st=2024-11-13T13:19:23Z&spr=https&sig=RWvgyvXeVR7oCEwzfniPRRLQiA9sByWY8bnqP1d3LtI%3D';
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
