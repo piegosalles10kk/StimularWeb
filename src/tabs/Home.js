@@ -53,6 +53,7 @@ function Home({ token }) {
                 const data = await response.json();
                 setDadosApp(data.dadosApp);
                 const totalDeDados = data.dadosApp.length - 1;
+            
 
                 // Atualiza os valores dinâmicos com o último item
                 if (totalDeDados >= 0) {
