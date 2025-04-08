@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form, Table, Image, Row, Col, Container, Card, Modal, Dropdown } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { api } from '../utils/api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { tokenMidia } from "../utils/tokenMidia";
 
 
@@ -49,10 +48,10 @@ export default function Atividades({ token }) {
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    const getUserId = async () => {
-      const id = await AsyncStorage.getItem('id');
+    const getUserId = () => {
+      const id = localStorage.getItem('id');
       setUserId(id);
-    };
+  };
     getUserId();
   }, []);
 
