@@ -181,14 +181,6 @@ function Home({ token }) {
                 </div>
 
                 <div style={{ borderWidth: "0px", borderColor: "#007bff", borderStyle: "solid", borderRadius: "10%", padding: "5%", marginLeft: "5%", alignItems: "center", marginBottom: "10%" }}>
-                <a 
-    href={`${window.location.origin}/StimularUpdates/atualiza.html`} 
-    target="_blank" 
-    rel="noopener noreferrer"
-    style={{ float: "right", backgroundColor: "transparent", border: "none", cursor: "pointer", textDecoration: "none" }}
->
-    ✅
-</a>
 
 
                     <h3 style={{ textAlign: "center", marginBottom: "5%", fontWeight: "bold" }}>{dadosAtualizacoes.tituloAtualizacao}</h3>
