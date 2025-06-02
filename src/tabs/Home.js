@@ -3,6 +3,7 @@ import Box from "../componentes/box";
 import { tokenMidia } from "../utils/tokenMidia";
 import { useEffect, useState } from "react";
 import { api } from "../utils/api";
+import { Button } from "react-bootstrap";
 
 function Home({ token }) {
     const [dadosApp, setDadosApp] = useState([]);
@@ -103,6 +104,27 @@ function Home({ token }) {
         }
     };
 
+    const handleUpdateDados = async () => {
+        try {
+            const response = await fetch(`${api}/dadosApp`, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (response.ok) {
+                const data = await response.json();
+                //console.log('Dados atualizados com sucesso:', data);
+                window.location.reload();
+            } else {
+                console.error('Erro ao atualizar os dados:', response.statusText);
+                alert('Erro ao atualizar os dados. Tente novamente.');
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar os dados:', error);
+        }
+    }
+
     const handleUploadFile = async () => {
         if (!selectedFile) return;
 
@@ -134,20 +156,24 @@ function Home({ token }) {
 
     return (
         <div style={{ marginTop: "5%" }}>
+            <Button style={{float: "right", backgroundColor: "transparent", color: "black", border: "none", fontSize: "20px"}} onClick={handleUpdateDados}>🔁</Button>
             {/* Seção dos gráficos */}
             <div style={{ display: "flex", gap: "5%", justifyContent: "center" }}>
                 {[
                     { titulo: "Pacientes cadastrados", valor: usuariosCadastrados, dados: dadosGraficoPacienteCadastrados, descricao: "Valor total de contas de pacientes cadastradas no aplicativo." },
                     { titulo: "Usuários pagantes", valor: usuariosPagantes, dados: dadosGraficoPacientePagantes, descricao: "Quantidade estimável com base em usuários com acesso ao aplicativo." },
-                    { titulo: "Receita estimada", valor: `R$${receitaEstimada}`, dados: dadosGraficoReceitaEstimada, descricao: "Valor estimável com base em usuários com acesso ao aplicativo." },
+                    { titulo: "Receita estimada", valor: `R$${receitaEstimada}`, dados: dadosGraficoReceitaEstimada, descricao: "Valor estimável com base em usuários com acesso ao aplicativo. Valor da assinatura (R$99,99)" },
                 ].map((item, index) => (
                     <div key={index} style={{ width: "33%", textAlign: "center" }}>
                         <Box titulo={item.titulo} subtitulo={item.valor} />
                         <Grafico data={item.dados} />
                         <p style={{ marginLeft: "10%" }}>{item.descricao}</p>
+                        
                     </div>
                 ))}
+                
             </div>
+            
 
             {/* Seção inferior logo e notas de atualização */}
             <div style={{ display: "flex", marginTop: "40px" }}>

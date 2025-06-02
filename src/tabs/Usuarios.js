@@ -323,6 +323,47 @@ class UsuariosCadastrados extends Component {
     return '';
   };
 
+demoValidade = (id, tipoDeConta) => {
+    // 🔹 Verifica se o tipo de conta é "paciente"
+    if (tipoDeConta !== "Paciente") {
+        alert("Não é possível alterar a validade desse tipo de conta.");
+        return; // Sai da função antes de prosseguir
+    }
+
+    console.log(id, tipoDeConta);
+    
+
+    // 🔹 Solicita os dias apenas se o tipo de conta for permitido
+    const dias = parseInt(prompt("Informe quantos dias você deseja fornecer ao usuário:"), 10);
+    
+    if (!isNaN(dias)) {
+        const { token } = this.props; // Pegando token corretamente
+        
+        fetch(`${api}/demo/${id}/${dias}`, {
+            method: "GET", 
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Validade atualizada!", data);
+            alert("Validade atualizada com sucesso!");
+              this.handleCloseModal();
+              this.buscarUsuarios();
+        })
+        .catch(error => {
+            console.error("Erro ao atualizar validade:", error);
+            alert("Erro ao atualizar validade.");
+        });
+
+    } else {
+        alert("Entrada inválida! Digite um número válido.");
+    }
+};
+
+
   renderTabela() {
     const { usuarios, searchQuery, filterTipoDeConta } = this.state;
     const filteredUsuarios = usuarios.filter((usuario) => {
@@ -613,6 +654,13 @@ class UsuariosCadastrados extends Component {
                     </Form.Control>
                   </Form.Group>
                 </Col>
+                <Col style={{ marginTop: '4%', display: 'table-row'}}>
+                <Form.Label>Válidade atual do usuário: <strong>{this.state.selectedUser.validade}</strong></Form.Label>
+                <Button style={{ width: '100%' }} onClick={() => this.demoValidade(this.state.selectedUser._id, this.state.selectedUser.tipoDeConta)}>
+                    Aumentar validade
+                </Button>               
+                </Col>
+                
               </Row>
             </Form>
           </Modal.Body>
