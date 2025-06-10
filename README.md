@@ -1,70 +1,173 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Configuração balança Chromatox
 
-## Available Scripts
+Passo a passo de como configurar o touchClient dentro do ambiente Chromatox.
 
-In the project directory, you can run:
+## Identificação dos dados da Balança
 
-### `npm start`
+### 1️⃣ Marca da Balança 
+Trabalhamos atualmente com 2 marcas de balança, sendo elas:
+- Sartorius
+- Metler Toledo
+Solicite a marca da balança para o usuário.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 2️⃣ Identificação do número porta COM
+Precisamos verificar no gerenciador de dispositivos qual porta COM a balança está conectada, para isso faça o seguinte:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Abra a barra de pesquisa do Windows e digite:
+```bash
+  Gerenciador de Dispositivos ou Device Manager
+```
+- Amplie a seguinte opção:
+```bash
+  Portas (COM e LPT) ou Ports (COM e LPT)
+```
+- Identifique qual porta está sendo usada pela balança.
 
-### `npm test`
+#### Exemplo:
+![App Screenshot](https://i.postimg.cc/8zCpk30d/exemplo.png)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 3️⃣ Número da estação
+Solicite para o usuário qual o número da estação que ele se encontra.
+Exemplo:
+| Número da estação   | Nomenclatura       |
+| :---------- | :--------- | 
+| `Balança 4` | `BAL4` | 
 
-### `npm run build`
+## Configuração
+### Arquivo config.properties 
+Acessando o diretório (Caso não exista, faça a criação): 
+```bash
+  c:\Suporte\balanca
+```
+Possuimos um arquivo chamado (Caso não exista, faça a criação):
+ ```bash
+  config.properties
+```
+Esse arquivo passa dinamicamente informações necessarias para o touchClient funcionar corretamente. Sendo a estrutura do arquivo a seguinte: 
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+# Porta utilizada pelo servidor web
+web_server_port=10000
+# Porta utilizada pelo servidor web seguro
+secure_web_server_port=10001
+# Porta utilizada pelo servidor web legado
+legacy_web_server_port=12000
+# Habilita o recurso de abertura automática de visualizadores
+enable_viewer_auto_open=true
+# Habilita o recurso de edição de configuração diretamente no aplicativo
+enable_configuration_editing=true
+# Versão forçada da API a ser utilizada
+api_version_override=
+# Habilita a integração com o microfone Philips SpeechMike
+enable_speechmike_integration=false
+# Nome do scanner utilizado para a digitalização de documentos
+scanner_name=
+# Habilita a tela de digitalização do fabricante do scanner
+enable_scanner_vendor_dialog=true
+# Inicia automaticamente a operação de digitalização quando solicitado pelo navegador
+enable_auto_scan=false
+# Resolução padrão para o escaneamento
+scanner_resolution=150.0
+# Tipo de keystore utilizada para operações de assinatura digital (PKCS11 ou PKCS12)
+ds_keystore_type=PKCS11
+# Caminho para a biblioteca PKCS11 (assinatura digital)
+ds_pkcs11_library=C:\Program Files (x86)\Oberthur Technologies\AWP\DLLs\OcsCryptolib_P11.dll
+# Caminho para o arquivo PKCS12 (assinatura digital)
+ds_pkcs12_file=C:\key.p12
+# Dispositivo de Interfaceamento do LIS (Test | Sartorius | Metler Toledo)
+interfacelis_device=Metler Toledo
+# Código de identificação do dispositivo de Interfaceamento do LIS
+interfacelis_device_code=BAL4
+# Porta serial em que o dispositivo de Interfaceamento do LIS está conectada (Windows: COM1 | COM2...) (Linux: /dev/ttyACM0 | /dev/ttyACM1...)
+interfacelis_device_serial_port=COM4
+# Tempo de atraso (em milissegundos) para a leitura dos dados enviados pelo dispositivo na porta serial 
+interfacelis_device_data_read_delay=500
+# Tempo (em horas) da verificação periódica obrigatória dos dispositivos
+interfacelis_validation_time=24
+# Valor padrão que será utilizado no cálculo da verificação periódica dos dispositivos
+interfacelis_validation_default_value=11.45
+# Valor do desvio padrão que será utilizado no cálculo da verificação periódica dos dispositivos
+interfacelis_validation_standard_deviation=1.45
+# Configurações dos Dispositivos de Interfaceamento do LIS
+interfacelis_devices_config=[{"code":"BAL4","name":"Metler Toledo","validationDate":1646056089915,"validationTimeInMilis":86400000,"defaultValue":11.45,"standardDeviation":1.45,"autoTare":true,"icon":"scale-balance","serialPort":"COM4","dataReadDelayInMillis":500}]
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```
+### Alteração de variáveis de config.properties
+Será necessario alterar algumas variáveis do arquivo para o funcionamento correto do touchClient. 
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Sendo essas alterações:
 
-### `npm run eject`
+- Marca da Balança: **interfacelis_device (linha 29-30)**
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+# Dispositivo de Interfaceamento do LIS (Test | Sartorius | Metler Toledo)  
+interfacelis_device= Metler Toledo(Marca da Balança)
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Número da estação: **interfacelis_device_code (linha 31-32)**
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+# Código de identificação do dispositivo de Interfaceamento do LIS
+interfacelis_device_code= BAL4(Número da estação)
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+-  Porta COM: **interfacelis_device_serial_port (linha 33-34)**
 
-## Learn More
+```bash
+# Porta serial em que o dispositivo de Interfaceamento do LIS está conectada (Windows: COM1 | COM2...) (Linux: /dev/ttyACM0 | /dev/ttyACM1...)
+interfacelis_device_serial_port=COM4(Porta COM)
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- Json com todos os dados acima: **interfacelis_devices_config (linha 41-45)**
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```bash
+# Valor do desvio padrão que será utilizado no cálculo da verificação periódica dos dispositivos
+interfacelis_validation_standard_deviation=1.45
+# Configurações dos Dispositivos de Interfaceamento do LIS
+interfacelis_devices_config=[{"code":"BAL4" (Número da estação) ,"name":"Metler Toledo"  (Marca da Balança),"validationDate":1646056089915,"validationTimeInMilis":86400000,"defaultValue":11.45,"standardDeviation":1.45,"autoTare":true,"icon":"scale-balance","serialPort":"COM4"  (Porta COM),"dataReadDelayInMillis":500}]
+```
 
-### Code Splitting
+- Após finalizado, salve o arquivo. (Caso tenha criado, salve no diretório: c:\Suporte\balanca).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Configurando config.properties de forma global
+O arquivo config.properties inicialmente deveria ser configurado manualmente para cada usuário no computador, porém podemos utilizar de um script padrão do windows para automatizar essa tarefa.
 
-### Analyzing the Bundle Size
+### Criação do arquivo .Bat
+- Abra um bloco de notas e cole o seguinte script:
+```bash
+cd c:\Suporte\balanca
+copy config.properties %userprofile%\appdata\Roaming\Touch\touch-client /Y
+```
+- Salve o arquivo na área de trabalho do usuário **Publico** com o nome de:
+```bash
+Config_Balança.bat
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Execução do .bat
+Execute o arquivo **Config_Balança.bat** que acabamos de criar e verifique se o mesmo funcionou corretamente da seguinte forma:
 
-### Making a Progressive Web App
+- Pressione **Windows + R** e digite **%appdata%**, em seguida acesse esse caminho:
+```bash
+\Touch\touch-client
+```
+- Verifique se existe um arquivo **config.properties** no local
+- Abra o mesmo e cheque se é o arquivo criado anteriormente, checando todas as variveis alteradas
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Validação
+- Finalizado o procedimento solicite uma reinicialização da máquina e faça o seguinte.
+- Após a reinicialização solicite um teste para o colaborador
 
-### Advanced Configuration
+## Sugestões
+Interessante solicitar que outro usuário acesse a máquina e teste o arquivo **Config_Balança.bat**.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Validando que o mesmo está enviando corretamente o **config.properties** para o local correto.
 
-### Deployment
+Caso deseje automatizar o .bat, é possível incluir o mesmo como uma tarefa no agendador de tarefas. Usando um gatilho de **login** do usuário.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Suporte
 
-### `npm run build` fails to minify
+Para suporte, mande um email para diego.salles.ext@dasa.com.br ou entre em contato via:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- [Diego Salles](https://www.linkedin.com/in/diego-salles-teixeira/)
+
