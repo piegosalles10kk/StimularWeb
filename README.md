@@ -159,11 +159,11 @@ Execute o arquivo **Config_Balança.bat** que acabamos de criar e verifique se o
 - Após a reinicialização solicite um teste para o colaborador
 
 ## Sugestões
-Interessante solicitar que outro usuário acesse a máquina e teste o arquivo **Config_Balança.bat**.
+- Interessante solicitar que outro usuário acesse a máquina e teste o arquivo **Config_Balança.bat**.
 
-Validando que o mesmo está enviando corretamente o **config.properties** para o local correto.
+- Validando que o mesmo está enviando corretamente o **config.properties** para o local correto.
 
-Caso deseje automatizar o .bat, é possível incluir o mesmo como uma tarefa no agendador de tarefas. Usando um gatilho de **login** do usuário.
+- Caso deseje automatizar o .bat, é possível incluir o mesmo como uma tarefa no agendador de tarefas. Usando um gatilho de **login** do usuário.
 
 ## Suporte
 
