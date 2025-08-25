@@ -482,7 +482,6 @@ console.error('Erro ao buscar dados:', error);
 2. **Relatórios Automáticos**: Geração de PDFs
 3. **Notificações Push**: Sistema de alertas
 4. **Backup Automático**: Proteção de dados
-5. **Multi-idioma**: Suporte internacional
 
 ### **Melhorias Técnicas**
 1. **TypeScript**: Tipagem estática
