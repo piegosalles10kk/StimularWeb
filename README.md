@@ -491,27 +491,6 @@ console.error('Erro ao buscar dados:', error);
 4. **Testes**: Cobertura de testes automatizados
 5. **CI/CD**: Pipeline de deploy automático
 
-## 📞 Suporte e Contribuição
-
-### **Como Contribuir**
-1. Fork do repositório
-2. Criação de branch para feature
-3. Implementação com testes
-4. Pull request com descrição detalhada
-5. Code review e aprovação
-
-### **Padrões de Código**
-- **ES6+**: Sintaxe moderna JavaScript
-- **Functional Components**: Preferência por hooks
-- **CSS-in-JS**: Estilos inline quando apropriado
-- **Bootstrap Classes**: Uso consistente do framework
-
-### **Documentação**
-- **Comentários**: Código bem documentado
-- **README**: Atualização constante
-- **Changelog**: Registro de alterações
-- **API Docs**: Documentação de endpoints
-
 ---
 
 *Para mais informações técnicas sobre a API, consulte o [README da API](./stimular_api_readme.md) ou entre em contato com a equipe de desenvolvimento.*
