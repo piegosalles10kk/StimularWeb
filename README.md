@@ -492,4 +492,4 @@ console.error('Erro ao buscar dados:', error);
 
 ---
 
-*Para mais informações técnicas sobre a API, consulte o [README da API](./stimular_api_readme.md) ou entre em contato com a equipe de desenvolvimento.*
+*Para mais informações técnicas sobre a API, consulte o [README da API]([./stimular_api_readme.md](https://github.com/piegosalles10kk/StimularBackEnd/blob/e4a3d72a260a2b3833296ced1249f42fc1917dd7/README.md)) ou entre em contato com a equipe de desenvolvimento.*
